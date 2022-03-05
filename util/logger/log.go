@@ -27,7 +27,7 @@ func CreateLogger(file io.Writer) CustomLogger {
 }
 
 func (customLogger *CustomLogger) WriteLog(logType int, messages ...interface{}) {
-	for message := range messages {
+	for _, message := range messages {
 		switch logType {
 		case INFO:
 			customLogger.LogInfo.Println(message)
