@@ -23,7 +23,11 @@ func Start(isDebugMode bool, customLogger *log.CustomLogger) {
 	handler = c.Handler(handler)
 
 	router.Use(middlewares.ErrorMiddleware).
-		WithGroup("/api/users", routes.ApiRoutes())
+		WithGroup("", func(group *bunrouter.Group) {
+			apiGroups, apiSlice := routes.ApiRoutes()
+			group.WithGroup("/api/v1", apiGroups)
+			group.WithGroup("/", routes.BaseRoutes(apiSlice))
+		})
 
 	httpServer := &http.Server{
 		Addr:    ":8888",
