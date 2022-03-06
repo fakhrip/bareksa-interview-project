@@ -23,8 +23,14 @@ func CreateDatabase(dbPass string) *bun.DB {
 	sqldb := stdlib.OpenDB(*config)
 	db := bun.NewDB(sqldb, pgdialect.New())
 
-	// Drop and create the table again (Refresh the whole database)
-	err = db.ResetModel(context.Background(), (*domain.News)(nil), (*domain.Topics)(nil))
+	// Create all tables if not exist
+	ctx := context.Background()
+	_, err = db.NewCreateTable().Model((*domain.News)(nil)).IfNotExists().WithForeignKeys().Exec(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = db.NewCreateTable().Model((*domain.Topics)(nil)).IfNotExists().WithForeignKeys().Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
