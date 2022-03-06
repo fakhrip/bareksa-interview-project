@@ -12,11 +12,11 @@ type topicsRepository struct {
 	db *bun.DB
 }
 
-func newTopicsRepository(db *bun.DB) repositories.ITopicsRepository {
+func createTopicsRepository(db *bun.DB) repositories.ITopicsRepository {
 	return &topicsRepository{db: db}
 }
 
-func (repository *topicsRepository) FindOneById(ctx context.Context, id int64) (*domain.Topics, error) {
+func (repository *topicsRepository) FindOneByColumn(ctx context.Context, col string, query interface{}) (*domain.Topics, error) {
 	// TODO: implement this function
 	return nil, nil
 }

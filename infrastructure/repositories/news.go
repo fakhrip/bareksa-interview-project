@@ -12,11 +12,16 @@ type newsRepository struct {
 	db *bun.DB
 }
 
-func newNewsRepository(db *bun.DB) repositories.INewsRepository {
+func createNewsRepository(db *bun.DB) repositories.INewsRepository {
 	return &newsRepository{db: db}
 }
 
-func (repository *newsRepository) FindOneById(ctx context.Context, id int64) (*domain.News, error) {
+func (repository *newsRepository) FindOneByColumn(ctx context.Context, col string, query interface{}) (*domain.News, error) {
+	// TODO: implement this function
+	return nil, nil
+}
+
+func (repository *newsRepository) FindAllByColumn(ctx context.Context, col string, query interface{}) ([]domain.News, error) {
 	// TODO: implement this function
 	return nil, nil
 }
