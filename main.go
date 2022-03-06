@@ -54,5 +54,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	server.Start(isDebugMode, dbPass, &customLogger)
+	migrationPass := os.Getenv("MIGRATION_PASSWORD")
+	if migrationPass == "" {
+		fmt.Println("[!] MIGRATION_PASSWORD property in .env is not set correctly")
+		os.Exit(1)
+	}
+
+	server.Start(isDebugMode, dbPass, migrationPass, &customLogger)
 }
