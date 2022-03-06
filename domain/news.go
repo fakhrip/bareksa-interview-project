@@ -13,7 +13,7 @@ type News struct {
 	Title  string    `json:"title" bun:"title,notnull"`
 	Body   string    `json:"body" bun:"body,notnull"`
 	Status string    `json:"status" bun:"status,notnull"`
-	Topics []*Topics `json:"-" bun:"rel:has-many,join:id=topic_id"`
+	Topics []*Topics `json:"-" bun:"rel:has-many,join:id=news_id"`
 
 	CreatedAt time.Time `json:"-" bun:",nullzero,notnull,default:current_timestamp"`
 	UpdatedAt time.Time `json:"-" bun:",nullzero,notnull,default:current_timestamp"`
