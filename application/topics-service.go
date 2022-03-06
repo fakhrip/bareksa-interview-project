@@ -11,7 +11,7 @@ type (
 		GetTopicsById(ctx context.Context, id int64) (*domain.Topics, error)
 		GetAllTopics(ctx context.Context) ([]domain.Topics, error)
 		InsertTopics(ctx context.Context, newTopicsModel *domain.Topics) (*domain.Topics, error)
-		UpdateTopics(ctx context.Context, newTopicsModel *domain.Topics) (*domain.Topics, error)
+		UpdateTopics(ctx context.Context, newTopicsModel *domain.Topics, id int64) (*domain.Topics, error)
 		DeleteTopics(ctx context.Context, id int64) (interface{}, error)
 	}
 	topicsService struct {
@@ -57,8 +57,8 @@ func (service *topicsService) InsertTopics(ctx context.Context, newTopicsModel *
 	return newTopicsModel, nil
 }
 
-func (service *topicsService) UpdateTopics(ctx context.Context, newTopicsModel *domain.Topics) (*domain.Topics, error) {
-	if err := service.Repository.Update(ctx, newTopicsModel); err != nil {
+func (service *topicsService) UpdateTopics(ctx context.Context, newTopicsModel *domain.Topics, id int64) (*domain.Topics, error) {
+	if err := service.Repository.Update(ctx, newTopicsModel, id); err != nil {
 		return nil, err
 	}
 

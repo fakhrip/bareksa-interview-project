@@ -12,7 +12,7 @@ import (
 func Initialize(dbPass string) []request.Request {
 	allRequests := make([]request.Request, 0, 20)
 	newsService := repositories.CreateNewsServiceResolve(dbPass)
-	// topicsService := repositories.CreateTopicsServiceResolve(dbPass)
+	topicsService := repositories.CreateTopicsServiceResolve(dbPass)
 
 	allRequests = append(allRequests,
 		request.AddRequest(request.GET, "/health_check", func(w http.ResponseWriter, req bunrouter.Request) error {
@@ -34,7 +34,22 @@ func Initialize(dbPass string) []request.Request {
 			"Update news by given id"),
 
 		request.AddRequest(request.DELETE, "/news/:id", controllers.DeleteNewsById(newsService),
-			"Delete news by given id"))
+			"Delete news by given id"),
+
+		request.AddRequest(request.POST, "/topics", controllers.CreateTopics(topicsService),
+			"Create given topics"),
+
+		request.AddRequest(request.GET, "/topics", controllers.ReadAllTopics(topicsService),
+			"Get list of all topics"),
+
+		request.AddRequest(request.GET, "/topics/:id", controllers.ReadTopicsById(topicsService),
+			"Get topics from given id"),
+
+		request.AddRequest(request.PUT, "/topics/:id", controllers.UpdateTopicsById(topicsService),
+			"Update topics by given id"),
+
+		request.AddRequest(request.DELETE, "/topics/:id", controllers.DeleteTopicsById(topicsService),
+			"Delete topics by given id"))
 
 	return allRequests
 }
