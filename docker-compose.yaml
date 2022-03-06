@@ -2,13 +2,22 @@ version: '3.6'
 services:
 
   postgres:
-    image: postgres
+    image: postgres:14.2-alpine
     volumes:
     - bareksa_project_db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
     ports:
       - "7777:5432"
+    restart: always
+
+  redis:
+    image: redis:6.2-alpine
+    volumes: 
+      - bareksa_project_cache:/data
+    command: redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASSWORD:?err}
+    ports:
+      - '6379:6379'
     restart: always
 
   backend:
@@ -22,7 +31,9 @@ services:
     - "${BACKEND_PORT:?err}:8888"
     depends_on:
     - "postgres"
+    - "redis"
     restart: always
 
 volumes:
   bareksa_project_db:
+  bareksa_project_cache:
