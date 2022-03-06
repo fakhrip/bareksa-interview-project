@@ -22,7 +22,7 @@ func Start(isDebugMode bool, dbPass string, migrationPass string, customLogger *
 	handler = gzhttp.GzipHandler(handler)
 	handler = c.Handler(handler)
 
-	router.Use(middlewares.ErrorMiddleware).
+	router.Use(middlewares.ErrorMiddleware(customLogger)).
 		WithGroup("", func(group *bunrouter.Group) {
 			apiGroups, apiSlice := routes.ApiRoutes(dbPass, migrationPass)
 			group.WithGroup("/api/v1", apiGroups)
