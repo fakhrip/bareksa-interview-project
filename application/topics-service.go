@@ -12,7 +12,7 @@ type (
 		GetAllTopics(ctx context.Context) ([]domain.Topics, error)
 		InsertTopics(ctx context.Context, newTopicsModel *domain.Topics) (*domain.Topics, error)
 		UpdateTopics(ctx context.Context, newTopicsModel *domain.Topics) (*domain.Topics, error)
-		DeleteTopics(ctx context.Context, id int64) (*domain.Topics, error)
+		DeleteTopics(ctx context.Context, id int64) (interface{}, error)
 	}
 	topicsService struct {
 		Repository repositories.ITopicsRepository
@@ -24,26 +24,51 @@ func CreateTopicsService(repository repositories.ITopicsRepository) TopicsServic
 }
 
 func (service *topicsService) GetTopicsById(ctx context.Context, id int64) (*domain.Topics, error) {
-	// TODO: implement this function
-	return nil, nil
+	var (
+		topics *domain.Topics
+		err    error
+	)
+
+	if topics, err = service.Repository.FindOneByColumn(ctx, "id", id); err != nil {
+		return nil, err
+	}
+
+	return topics, nil
 }
 
 func (service *topicsService) GetAllTopics(ctx context.Context) ([]domain.Topics, error) {
-	// TODO: implement this function
-	return nil, nil
+	var (
+		allTopics []domain.Topics
+		err       error
+	)
+
+	if allTopics, err = service.Repository.GetAll(ctx); err != nil {
+		return nil, err
+	}
+
+	return allTopics, nil
 }
 
 func (service *topicsService) InsertTopics(ctx context.Context, newTopicsModel *domain.Topics) (*domain.Topics, error) {
-	// TODO: implement this function
-	return nil, nil
+	if err := service.Repository.Insert(ctx, newTopicsModel); err != nil {
+		return nil, err
+	}
+
+	return newTopicsModel, nil
 }
 
 func (service *topicsService) UpdateTopics(ctx context.Context, newTopicsModel *domain.Topics) (*domain.Topics, error) {
-	// TODO: implement this function
-	return nil, nil
+	if err := service.Repository.Update(ctx, newTopicsModel); err != nil {
+		return nil, err
+	}
+
+	return newTopicsModel, nil
 }
 
-func (service *topicsService) DeleteTopics(ctx context.Context, id int64) (*domain.Topics, error) {
-	// TODO: implement this function
-	return nil, nil
+func (service *topicsService) DeleteTopics(ctx context.Context, id int64) (interface{}, error) {
+	if err := service.Repository.Delete(ctx, id); err != nil {
+		return nil, err
+	}
+
+	return id, nil
 }
