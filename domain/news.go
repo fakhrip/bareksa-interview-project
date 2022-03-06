@@ -9,12 +9,12 @@ import (
 type News struct {
 	bun.BaseModel `bun:"table:news,alias:n"`
 
-	ID     int64     `bun:"id,pk,autoincrement"`
-	Title  string    `bun:"title,notnull"`
-	Body   string    `bun:"body,notnull"`
-	Status string    `bun:"status,notnull"`
-	Topics []*Topics `bun:"rel:has-many,join:id=topic_id"`
+	ID     int64     `json:"-" bun:"id,pk,autoincrement"`
+	Title  string    `json:"title" bun:"title,notnull"`
+	Body   string    `json:"body" bun:"body,notnull"`
+	Status string    `json:"status" bun:"status,notnull"`
+	Topics []*Topics `json:"-" bun:"rel:has-many,join:id=topic_id"`
 
-	CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
-	UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
+	CreatedAt time.Time `json:"-" bun:",nullzero,notnull,default:current_timestamp"`
+	UpdatedAt time.Time `json:"-" bun:",nullzero,notnull,default:current_timestamp"`
 }

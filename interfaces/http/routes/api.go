@@ -1,27 +1,40 @@
 package routes
 
 import (
+	repositories "bareksa-interview-project/infrastructure/repositories"
+	controllers "bareksa-interview-project/interfaces/http/controllers"
 	request "bareksa-interview-project/util/requesttype"
 	"net/http"
 
 	"github.com/uptrace/bunrouter"
 )
 
-func Initialize() []request.Request {
+func Initialize(dbPass string) []request.Request {
 	allRequests := make([]request.Request, 0, 20)
+	newsService := repositories.CreateNewsServiceResolve(dbPass)
+	// topicsService := repositories.CreateTopicsServiceResolve(dbPass)
 
 	allRequests = append(allRequests,
 		request.AddRequest(request.GET, "/health_check", func(w http.ResponseWriter, req bunrouter.Request) error {
 			return bunrouter.JSON(w, bunrouter.H{
 				"message": "🤖: Ayy sir, service is currently healthy, you may want to continue enjoy your life now",
 			})
-		}, "Check backend service health (basically a status check)"))
+		}, "Check backend service health (basically a status check)"),
+
+		request.AddRequest(request.POST, "/news", controllers.CreateNews(newsService),
+			"Create given news"))
+
+	// request.AddRequest(request.GET, "/news", controllers.CreateNews(newsService),
+	// 	"Get list of all news"),
+
+	// request.AddRequest(request.GET, "/news/:id", controllers.CreateNews(newsService),
+	// 	"Get news from given id"))
 
 	return allRequests
 }
 
-func ApiRoutes() (func(g *bunrouter.Group), *[]request.Request) {
-	allRequests := Initialize()
+func ApiRoutes(dbPass string) (func(g *bunrouter.Group), *[]request.Request) {
+	allRequests := Initialize(dbPass)
 
 	return func(group *bunrouter.Group) {
 		for index := range allRequests {

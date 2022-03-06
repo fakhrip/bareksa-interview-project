@@ -10,6 +10,7 @@ type (
 	NewsService interface {
 		GetNewsById(ctx context.Context, id int64) (*domain.News, error)
 		GetNewsByStatus(ctx context.Context, status int) ([]domain.News, error)
+		GetNewsByTopics(ctx context.Context, topics string) ([]domain.News, error)
 		GetAllNews(ctx context.Context) ([]domain.News, error)
 		InsertNews(ctx context.Context, newNewsModel *domain.News) (*domain.News, error)
 		UpdateNews(ctx context.Context, newNewsModel *domain.News) (*domain.News, error)
@@ -30,6 +31,11 @@ func (service *newsService) GetNewsById(ctx context.Context, id int64) (*domain.
 }
 
 func (service *newsService) GetNewsByStatus(ctx context.Context, status int) ([]domain.News, error) {
+	// TODO: implement this function
+	return nil, nil
+}
+
+func (service *newsService) GetNewsByTopics(ctx context.Context, topics string) ([]domain.News, error) {
 	// TODO: implement this function
 	return nil, nil
 }

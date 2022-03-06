@@ -48,5 +48,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	server.Start(isDebugMode, &customLogger)
+	dbPass := os.Getenv("POSTGRES_PASSWORD")
+	if dbPass == "" {
+		fmt.Println("[!] POSTGRES_PASSWORD property in .env is not set correctly")
+		os.Exit(1)
+	}
+
+	server.Start(isDebugMode, dbPass, &customLogger)
 }
