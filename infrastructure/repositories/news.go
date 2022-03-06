@@ -20,7 +20,7 @@ func createNewsRepository(db *bun.DB) repositories.INewsRepository {
 func (repository *newsRepository) FindOneByColumn(ctx context.Context, col string, query interface{}) (*domain.News, error) {
 	news := new(domain.News)
 
-	err := repository.db.NewSelect().Model(&news).
+	err := repository.db.NewSelect().Model(news).
 		Where("? = ?", bun.Ident(col), query).Limit(1).Scan(ctx)
 	if err != nil {
 		return nil, err
