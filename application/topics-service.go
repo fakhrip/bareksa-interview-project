@@ -49,7 +49,7 @@ func (service *topicsService) GetNewsByTopics(ctx context.Context, topics string
 	}
 
 	for _, value := range allTopics {
-		allNews = append(allNews, *value.News)
+		allNews = append(allNews, value.News)
 	}
 
 	return allNews, nil

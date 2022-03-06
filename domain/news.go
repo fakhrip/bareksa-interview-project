@@ -9,7 +9,7 @@ import (
 type News struct {
 	bun.BaseModel `bun:"table:news,alias:n"`
 
-	ID     int64     `json:"-" bun:"id,pk,autoincrement"`
+	ID     int64     `json:"id" bun:"id,pk,autoincrement"`
 	Title  string    `json:"title" bun:"title,notnull,unique"`
 	Body   string    `json:"body" bun:"body,notnull"`
 	Status string    `json:"status" bun:"status,notnull"`
