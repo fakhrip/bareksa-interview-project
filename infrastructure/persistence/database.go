@@ -1,6 +1,8 @@
 package persistence
 
 import (
+	domain "bareksa-interview-project/domain"
+	"context"
 	"fmt"
 
 	"github.com/jackc/pgx/v4"
@@ -20,6 +22,12 @@ func CreateDatabase(dbPass string) *bun.DB {
 
 	sqldb := stdlib.OpenDB(*config)
 	db := bun.NewDB(sqldb, pgdialect.New())
+
+	// Drop and create the table again (Refresh the whole database)
+	err = db.ResetModel(context.Background(), (*domain.News)(nil), (*domain.Topics)(nil))
+	if err != nil {
+		panic(err)
+	}
 
 	return db
 }
