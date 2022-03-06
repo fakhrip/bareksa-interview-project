@@ -75,6 +75,29 @@ func ReadNewsById(newsService application.NewsService) bunrouter.HandlerFunc {
 	}
 }
 
+func ReadNewsByStatus(newsService application.NewsService) bunrouter.HandlerFunc {
+	return func(w http.ResponseWriter, req bunrouter.Request) error {
+		var (
+			news []domain.News
+			err  error
+		)
+
+		status, err := strconv.Atoi(req.Params().ByName("status"))
+		if err != nil {
+			return err
+		}
+
+		if news, err = newsService.GetNewsByStatus(context.Background(), status); err != nil {
+			return err
+		}
+
+		return bunrouter.JSON(w, bunrouter.H{
+			"message": "News successfully read",
+			"news":    news,
+		})
+	}
+}
+
 func UpdateNewsById(newsService application.NewsService) bunrouter.HandlerFunc {
 	return func(w http.ResponseWriter, req bunrouter.Request) error {
 		var (
