@@ -41,7 +41,7 @@ func (repository *topicsRepository) GetAll(ctx context.Context) ([]domain.Topics
 }
 
 func (repository *topicsRepository) Insert(ctx context.Context, topic *domain.Topics) error {
-	_, err := repository.db.NewInsert().Model(&topic).Exec(ctx)
+	_, err := repository.db.NewInsert().Model(topic).Exec(ctx)
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func (repository *topicsRepository) Insert(ctx context.Context, topic *domain.To
 }
 
 func (repository *topicsRepository) Update(ctx context.Context, topic *domain.Topics) error {
-	_, err := repository.db.NewUpdate().Model(&topic).Exec(ctx)
+	_, err := repository.db.NewUpdate().Model(topic).Exec(ctx)
 	if err != nil {
 		return err
 	}

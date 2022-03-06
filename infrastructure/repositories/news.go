@@ -53,7 +53,7 @@ func (repository *newsRepository) GetAll(ctx context.Context) ([]domain.News, er
 }
 
 func (repository *newsRepository) Insert(ctx context.Context, news *domain.News) error {
-	_, err := repository.db.NewInsert().Model(&news).Exec(ctx)
+	_, err := repository.db.NewInsert().Model(news).Exec(ctx)
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func (repository *newsRepository) Insert(ctx context.Context, news *domain.News)
 }
 
 func (repository *newsRepository) Update(ctx context.Context, news *domain.News) error {
-	_, err := repository.db.NewUpdate().Model(&news).Exec(ctx)
+	_, err := repository.db.NewUpdate().Model(news).Exec(ctx)
 	if err != nil {
 		return err
 	}
