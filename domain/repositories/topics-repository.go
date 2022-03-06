@@ -6,7 +6,7 @@ import (
 )
 
 type ITopicsRepository interface {
-	FindOneById(ctx context.Context, id int64) (*domain.Topics, error)
+	FindOneByColumn(ctx context.Context, col string, query interface{}) (*domain.Topics, error)
 	GetAll(ctx context.Context) ([]domain.Topics, error)
 	Insert(ctx context.Context, topic *domain.Topics) error
 	Update(ctx context.Context, topic *domain.Topics) error
