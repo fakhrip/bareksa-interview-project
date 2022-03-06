@@ -44,7 +44,7 @@ func (service *topicsService) GetNewsByTopics(ctx context.Context, topics string
 		err       error
 	)
 
-	if allTopics, err = service.Repository.FindAllByColumn(ctx, "status", topics); err != nil {
+	if allTopics, err = service.Repository.FindAllByColumn(ctx, "name", topics); err != nil {
 		return nil, err
 	}
 
