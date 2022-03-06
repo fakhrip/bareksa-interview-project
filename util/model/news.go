@@ -19,10 +19,10 @@ func StatusString(status int) string {
 	return ""
 }
 
-func StatusDict() map[string]bool {
-	return map[string]bool{
-		"draft":   true,
-		"deleted": true,
-		"publish": true,
+func StatusDict() map[string]int {
+	return map[string]int{
+		"draft":   DRAFT,
+		"deleted": DELETED,
+		"publish": PUBLISH,
 	}
 }

@@ -3,8 +3,10 @@ package controllers
 import (
 	application "bareksa-interview-project/application"
 	domain "bareksa-interview-project/domain"
+	utilModel "bareksa-interview-project/util/model"
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -82,12 +84,14 @@ func ReadNewsByStatus(newsService application.NewsService) bunrouter.HandlerFunc
 			err  error
 		)
 
-		status, err := strconv.Atoi(req.Params().ByName("status"))
-		if err != nil {
-			return err
+		status := req.Params().ByName("status")
+		statusInt, ok := utilModel.StatusDict()[status]
+
+		if !ok {
+			return errors.New("Status should be either 'draft', 'deleted', or 'publish'")
 		}
 
-		if news, err = newsService.GetNewsByStatus(context.Background(), status); err != nil {
+		if news, err = newsService.GetNewsByStatus(context.Background(), statusInt); err != nil {
 			return err
 		}
 
