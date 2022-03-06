@@ -5,6 +5,7 @@ import (
 	repositories "bareksa-interview-project/domain/repositories"
 	utilModel "bareksa-interview-project/util/model"
 	"context"
+	"errors"
 )
 
 type (
@@ -14,7 +15,7 @@ type (
 		GetNewsByTopics(ctx context.Context, topics string) ([]domain.News, error)
 		GetAllNews(ctx context.Context) ([]domain.News, error)
 		InsertNews(ctx context.Context, newNewsModel *domain.News) (*domain.News, error)
-		UpdateNews(ctx context.Context, newNewsModel *domain.News) (*domain.News, error)
+		UpdateNews(ctx context.Context, newNewsModel *domain.News, id int64) (*domain.News, error)
 		DeleteNews(ctx context.Context, id int64) (interface{}, error)
 	}
 	newsService struct {
@@ -71,6 +72,10 @@ func (service *newsService) GetAllNews(ctx context.Context) ([]domain.News, erro
 }
 
 func (service *newsService) InsertNews(ctx context.Context, newNewsModel *domain.News) (*domain.News, error) {
+	if _, ok := utilModel.StatusDict()[newNewsModel.Status]; !ok {
+		return nil, errors.New("Status should be either 'draft', 'deleted', or 'publish'")
+	}
+
 	if err := service.Repository.Insert(ctx, newNewsModel); err != nil {
 		return nil, err
 	}
@@ -78,8 +83,12 @@ func (service *newsService) InsertNews(ctx context.Context, newNewsModel *domain
 	return newNewsModel, nil
 }
 
-func (service *newsService) UpdateNews(ctx context.Context, newNewsModel *domain.News) (*domain.News, error) {
-	if err := service.Repository.Update(ctx, newNewsModel); err != nil {
+func (service *newsService) UpdateNews(ctx context.Context, newNewsModel *domain.News, id int64) (*domain.News, error) {
+	if _, ok := utilModel.StatusDict()[newNewsModel.Status]; !ok {
+		return nil, errors.New("Status should be either 'draft', 'deleted', or 'publish'")
+	}
+
+	if err := service.Repository.Update(ctx, newNewsModel, id); err != nil {
 		return nil, err
 	}
 

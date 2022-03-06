@@ -22,13 +22,19 @@ func Initialize(dbPass string) []request.Request {
 		}, "Check backend service health (basically a status check)"),
 
 		request.AddRequest(request.POST, "/news", controllers.CreateNews(newsService),
-			"Create given news"))
+			"Create given news"),
 
-	// request.AddRequest(request.GET, "/news", controllers.CreateNews(newsService),
-	// 	"Get list of all news"),
+		request.AddRequest(request.GET, "/news", controllers.ReadAllNews(newsService),
+			"Get list of all news"),
 
-	// request.AddRequest(request.GET, "/news/:id", controllers.CreateNews(newsService),
-	// 	"Get news from given id"))
+		request.AddRequest(request.GET, "/news/:id", controllers.ReadNewsById(newsService),
+			"Get news from given id"),
+
+		request.AddRequest(request.PUT, "/news/:id", controllers.UpdateNewsById(newsService),
+			"Update news by given id"),
+
+		request.AddRequest(request.DELETE, "/news/:id", controllers.DeleteNewsById(newsService),
+			"Delete news by given id"))
 
 	return allRequests
 }

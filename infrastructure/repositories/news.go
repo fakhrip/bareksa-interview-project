@@ -61,8 +61,9 @@ func (repository *newsRepository) Insert(ctx context.Context, news *domain.News)
 	return nil
 }
 
-func (repository *newsRepository) Update(ctx context.Context, news *domain.News) error {
-	_, err := repository.db.NewUpdate().Model(news).Exec(ctx)
+func (repository *newsRepository) Update(ctx context.Context, news *domain.News, id int64) error {
+	_, err := repository.db.NewUpdate().Model(news).
+		Where("? = ?", bun.Ident("id"), strconv.Itoa(int(id))).Exec(ctx)
 	if err != nil {
 		return err
 	}
