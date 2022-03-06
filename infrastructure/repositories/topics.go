@@ -4,6 +4,7 @@ import (
 	domain "bareksa-interview-project/domain"
 	repositories "bareksa-interview-project/domain/repositories"
 	"context"
+	"strconv"
 
 	"github.com/uptrace/bun"
 )
@@ -17,26 +18,52 @@ func createTopicsRepository(db *bun.DB) repositories.ITopicsRepository {
 }
 
 func (repository *topicsRepository) FindOneByColumn(ctx context.Context, col string, query interface{}) (*domain.Topics, error) {
-	// TODO: implement this function
-	return nil, nil
+	topics := new(domain.Topics)
+
+	err := repository.db.NewSelect().Model(&topics).
+		Where("? = ?", bun.Ident(col), query).Limit(1).Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return topics, nil
 }
 
 func (repository *topicsRepository) GetAll(ctx context.Context) ([]domain.Topics, error) {
-	// TODO: implement this function
-	return nil, nil
+	allTopics := make([]domain.Topics, 0)
+
+	err := repository.db.NewSelect().Model(&allTopics).Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return allTopics, nil
 }
 
 func (repository *topicsRepository) Insert(ctx context.Context, topic *domain.Topics) error {
-	// TODO: implement this function
+	_, err := repository.db.NewInsert().Model(&topic).Exec(ctx)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (repository *topicsRepository) Update(ctx context.Context, topic *domain.Topics) error {
-	// TODO: implement this function
+	_, err := repository.db.NewUpdate().Model(&topic).Exec(ctx)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (repository *topicsRepository) Delete(ctx context.Context, id int64) error {
-	// TODO: implement this function
+	_, err := repository.db.NewDelete().Model((*domain.Topics)(nil)).
+		Where("? = ?", bun.Ident("id"), strconv.Itoa(int(id))).Exec(ctx)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

@@ -4,6 +4,7 @@ import (
 	domain "bareksa-interview-project/domain"
 	repositories "bareksa-interview-project/domain/repositories"
 	"context"
+	"strconv"
 
 	"github.com/uptrace/bun"
 )
@@ -17,31 +18,64 @@ func createNewsRepository(db *bun.DB) repositories.INewsRepository {
 }
 
 func (repository *newsRepository) FindOneByColumn(ctx context.Context, col string, query interface{}) (*domain.News, error) {
-	// TODO: implement this function
-	return nil, nil
+	news := new(domain.News)
+
+	err := repository.db.NewSelect().Model(&news).
+		Where("? = ?", bun.Ident(col), query).Limit(1).Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return news, nil
 }
 
 func (repository *newsRepository) FindAllByColumn(ctx context.Context, col string, query interface{}) ([]domain.News, error) {
-	// TODO: implement this function
-	return nil, nil
+	someNews := make([]domain.News, 0)
+
+	err := repository.db.NewSelect().Model(&someNews).
+		Where("? = ?", bun.Ident(col), query).Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return someNews, nil
 }
 
 func (repository *newsRepository) GetAll(ctx context.Context) ([]domain.News, error) {
-	// TODO: implement this function
-	return nil, nil
+	allNews := make([]domain.News, 0)
+
+	err := repository.db.NewSelect().Model(&allNews).Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return allNews, nil
 }
 
 func (repository *newsRepository) Insert(ctx context.Context, news *domain.News) error {
-	// TODO: implement this function
+	_, err := repository.db.NewInsert().Model(&news).Exec(ctx)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (repository *newsRepository) Update(ctx context.Context, news *domain.News) error {
-	// TODO: implement this function
+	_, err := repository.db.NewUpdate().Model(&news).Exec(ctx)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (repository *newsRepository) Delete(ctx context.Context, id int64) error {
-	// TODO: implement this function
+	_, err := repository.db.NewDelete().Model((*domain.News)(nil)).
+		Where("? = ?", bun.Ident("id"), strconv.Itoa(int(id))).Exec(ctx)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
