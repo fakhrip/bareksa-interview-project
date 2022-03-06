@@ -29,6 +29,18 @@ func (repository *topicsRepository) FindOneByColumn(ctx context.Context, col str
 	return topics, nil
 }
 
+func (repository *topicsRepository) FindAllByColumn(ctx context.Context, col string, query interface{}) ([]domain.Topics, error) {
+	someTopics := make([]domain.Topics, 0)
+
+	err := repository.db.NewSelect().Model(&someTopics).
+		Where("? = ?", bun.Ident(col), query).Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return someTopics, nil
+}
+
 func (repository *topicsRepository) GetAll(ctx context.Context) ([]domain.Topics, error) {
 	allTopics := make([]domain.Topics, 0)
 

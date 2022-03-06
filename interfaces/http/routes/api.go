@@ -52,7 +52,10 @@ func Initialize(dbPass string) []request.Request {
 			"Delete topics by given id"),
 
 		request.AddRequest(request.GET, "/news/status/:status", controllers.ReadNewsByStatus(newsService),
-			"Get news from given status"))
+			"Get news from given status"),
+
+		request.AddRequest(request.GET, "/news/topic/:topic", controllers.ReadNewsByTopic(topicsService),
+			"Get news from given topic"))
 
 	return allRequests
 }

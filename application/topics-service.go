@@ -9,6 +9,7 @@ import (
 type (
 	TopicsService interface {
 		GetTopicsById(ctx context.Context, id int64) (*domain.Topics, error)
+		GetNewsByTopics(ctx context.Context, topics string) ([]domain.News, error)
 		GetAllTopics(ctx context.Context) ([]domain.Topics, error)
 		InsertTopics(ctx context.Context, newTopicsModel *domain.Topics) (*domain.Topics, error)
 		UpdateTopics(ctx context.Context, newTopicsModel *domain.Topics, id int64) (*domain.Topics, error)
@@ -34,6 +35,24 @@ func (service *topicsService) GetTopicsById(ctx context.Context, id int64) (*dom
 	}
 
 	return topics, nil
+}
+
+func (service *topicsService) GetNewsByTopics(ctx context.Context, topics string) ([]domain.News, error) {
+	var (
+		allNews   []domain.News
+		allTopics []domain.Topics
+		err       error
+	)
+
+	if allTopics, err = service.Repository.FindAllByColumn(ctx, "status", topics); err != nil {
+		return nil, err
+	}
+
+	for _, value := range allTopics {
+		allNews = append(allNews, *value.News)
+	}
+
+	return allNews, nil
 }
 
 func (service *topicsService) GetAllTopics(ctx context.Context) ([]domain.Topics, error) {
