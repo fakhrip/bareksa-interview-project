@@ -24,6 +24,8 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+      args:
+        - LOG_FILE=${LOG_FILE:?err}
     image: backend
     volumes:
       - "${PWD}/${LOG_FILE:?err}.txt:/usr/src/app/${LOG_FILE:?err}.txt"

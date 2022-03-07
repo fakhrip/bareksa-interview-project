@@ -1,11 +1,15 @@
 FROM golang:1.17 AS build
 
+ARG LOG_FILE
+
 WORKDIR /usr/src/app
 
 # pre-copy/cache go.mod for pre-downloading dependencies and only redownloading them in subsequent builds if they change
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
+COPY ${LOG_FILE}.txt /${LOG_FILE}.txt
+COPY .env /.env
 COPY . .
 
 RUN go build -o /bareksa-interview
@@ -14,12 +18,14 @@ RUN go build -o /bareksa-interview
 
 FROM gcr.io/distroless/base-debian10
 
-WORKDIR /
+ARG LOG_FILE
 
-COPY --from=build /bareksa-interview /bareksa-interview
+WORKDIR /usr/src/app
 
-EXPOSE 8080
+COPY --from=build /${LOG_FILE}.txt ./${LOG_FILE}.txt
+COPY --from=build /.env ./.env
+COPY --from=build /bareksa-interview ./bareksa-interview
 
-USER nonroot:nonroot
+# USER nonroot:nonroot
 
-ENTRYPOINT ["/bareksa-interview"]
+ENTRYPOINT ["./bareksa-interview"]
