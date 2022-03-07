@@ -8,7 +8,9 @@ News and Topic management using REST API with domain driven design architecture 
 
 # List of endpoints (apis)
 
-All enppoints including their respective descriptions are listed in /
+All endpoints including their respective descriptions are listed in /
+
+You can check it by going to `http://localhost:{{BACKEND_PORT}}/`
 
 # How to build
 
