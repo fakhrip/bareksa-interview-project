@@ -20,7 +20,7 @@ Or to make things easier, just use docker compose and run `docker-compose up --b
 
 ## Sorry, im lazy
 
-Okay, sure, we are all, so here you go (dont use this for production, in that case dont be lazy instead):
+Okay, sure, we all are, so here you go (dont use this for production, in that case dont be lazy instead):
 ```bash
 cat > .env <<EOF
 POSTGRES_PASSWORD=hello_there
