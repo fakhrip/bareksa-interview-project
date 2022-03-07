@@ -1,4 +1,4 @@
-# bareska-interview-project
+# bareksa-interview-project
 
 News and Topic management using REST API with domain driven design architecture with some add-on features :
 - Caching mechanism using redis

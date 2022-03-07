@@ -13,11 +13,11 @@ func BaseRoutes(apiRequests *[]request.Request) func(g *bunrouter.Group) {
 		<html>
 		<head>
 			<title>
-				Bareska Interview Project (auto-generated documentation)
+				Bareksa Interview Project (auto-generated documentation)
 			</title>
 		</head>
 		<body>
-			<h1>Bareska Interview Project (auto-generated documentation)</h1>
+			<h1>Bareksa Interview Project (auto-generated documentation)</h1>
 			<h3>Api endpoint list :</h3>
 			<ul>
 				{{range .Apis}}

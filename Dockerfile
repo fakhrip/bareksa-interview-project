@@ -8,7 +8,7 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN go build -o /bareska-interview
+RUN go build -o /bareksa-interview
 
 ### Deploy built binary
 
@@ -16,10 +16,10 @@ FROM gcr.io/distroless/base-debian10
 
 WORKDIR /
 
-COPY --from=build /bareska-interview /bareska-interview
+COPY --from=build /bareksa-interview /bareksa-interview
 
 EXPOSE 8080
 
 USER nonroot:nonroot
 
-ENTRYPOINT ["/bareska-interview"]
+ENTRYPOINT ["/bareksa-interview"]
