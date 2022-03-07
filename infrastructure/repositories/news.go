@@ -4,6 +4,7 @@ import (
 	domain "bareksa-interview-project/domain"
 	repositories "bareksa-interview-project/domain/repositories"
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/go-redis/cache/v8"
@@ -22,9 +23,26 @@ func createNewsRepository(db *bun.DB, cache *cache.Cache) repositories.INewsRepo
 func (repository *newsRepository) FindOneByColumn(ctx context.Context, col string, query interface{}) (*domain.News, error) {
 	news := new(domain.News)
 
+	cacheKey := fmt.Sprintf("news-%s-%v", col, query)
+	if repository.cache.Exists(ctx, cacheKey) {
+		if err := repository.cache.Get(ctx, cacheKey, &news); err == nil {
+			return news, nil
+		} else {
+			return nil, err
+		}
+	}
+
 	err := repository.db.NewSelect().Model(news).
 		Where("? = ?", bun.Ident(col), query).Limit(1).Scan(ctx)
 	if err != nil {
+		return nil, err
+	}
+
+	if err = repository.cache.Set(&cache.Item{
+		Ctx:   ctx,
+		Key:   cacheKey,
+		Value: news,
+	}); err != nil {
 		return nil, err
 	}
 
@@ -34,9 +52,26 @@ func (repository *newsRepository) FindOneByColumn(ctx context.Context, col strin
 func (repository *newsRepository) FindAllByColumn(ctx context.Context, col string, query interface{}) ([]domain.News, error) {
 	someNews := make([]domain.News, 0)
 
+	cacheKey := fmt.Sprintf("news-%s-%v-all", col, query)
+	if repository.cache.Exists(ctx, cacheKey) {
+		if err := repository.cache.Get(ctx, cacheKey, &someNews); err == nil {
+			return someNews, nil
+		} else {
+			return nil, err
+		}
+	}
+
 	err := repository.db.NewSelect().Model(&someNews).
 		Where("? = ?", bun.Ident(col), query).Scan(ctx)
 	if err != nil {
+		return nil, err
+	}
+
+	if err = repository.cache.Set(&cache.Item{
+		Ctx:   ctx,
+		Key:   cacheKey,
+		Value: someNews,
+	}); err != nil {
 		return nil, err
 	}
 
@@ -46,8 +81,25 @@ func (repository *newsRepository) FindAllByColumn(ctx context.Context, col strin
 func (repository *newsRepository) GetAll(ctx context.Context) ([]domain.News, error) {
 	allNews := make([]domain.News, 0)
 
+	cacheKey := "news-all"
+	if repository.cache.Exists(ctx, cacheKey) {
+		if err := repository.cache.Get(ctx, cacheKey, &allNews); err == nil {
+			return allNews, nil
+		} else {
+			return nil, err
+		}
+	}
+
 	err := repository.db.NewSelect().Model(&allNews).Scan(ctx)
 	if err != nil {
+		return nil, err
+	}
+
+	if err = repository.cache.Set(&cache.Item{
+		Ctx:   ctx,
+		Key:   cacheKey,
+		Value: allNews,
+	}); err != nil {
 		return nil, err
 	}
 
@@ -55,6 +107,24 @@ func (repository *newsRepository) GetAll(ctx context.Context) ([]domain.News, er
 }
 
 func (repository *newsRepository) Insert(ctx context.Context, news *domain.News) error {
+	allNews := make([]domain.News, 0)
+
+	cacheKey := "news-all"
+	if repository.cache.Exists(ctx, cacheKey) {
+		if err := repository.cache.Get(ctx, cacheKey, &allNews); err != nil {
+			return err
+		}
+
+		allNews = append(allNews, *news)
+		if err := repository.cache.Set(&cache.Item{
+			Ctx:   ctx,
+			Key:   cacheKey,
+			Value: allNews,
+		}); err != nil {
+			return err
+		}
+	}
+
 	_, err := repository.db.NewInsert().Model(news).Exec(ctx)
 	if err != nil {
 		return err
@@ -64,6 +134,17 @@ func (repository *newsRepository) Insert(ctx context.Context, news *domain.News)
 }
 
 func (repository *newsRepository) Update(ctx context.Context, news *domain.News, id int64) error {
+	cacheKey := fmt.Sprintf("news-id-%v", id)
+	if repository.cache.Exists(ctx, cacheKey) {
+		if err := repository.cache.Set(&cache.Item{
+			Ctx:   ctx,
+			Key:   cacheKey,
+			Value: news,
+		}); err != nil {
+			return err
+		}
+	}
+
 	_, err := repository.db.NewUpdate().Model(news).
 		Where("? = ?", bun.Ident("id"), strconv.Itoa(int(id))).Exec(ctx)
 	if err != nil {
@@ -74,6 +155,13 @@ func (repository *newsRepository) Update(ctx context.Context, news *domain.News,
 }
 
 func (repository *newsRepository) Delete(ctx context.Context, id int64) error {
+	cacheKey := fmt.Sprintf("news-id-%v", id)
+	if repository.cache.Exists(ctx, cacheKey) {
+		if err := repository.cache.Delete(ctx, cacheKey); err != nil {
+			return err
+		}
+	}
+
 	_, err := repository.db.NewDelete().Model((*domain.News)(nil)).
 		Where("? = ?", bun.Ident("id"), strconv.Itoa(int(id))).Exec(ctx)
 	if err != nil {

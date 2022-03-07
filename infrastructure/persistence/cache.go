@@ -9,7 +9,7 @@ import (
 
 func CreateRedisCache(redisPass string) *cache.Cache {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     "redis:6379",
 		Password: redisPass,
 		DB:       0,
 	})
