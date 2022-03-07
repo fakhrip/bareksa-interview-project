@@ -33,7 +33,7 @@ DEBUG_MODE=true
 LOG_FILE=logs
 EOF
 
-docker-compose up --build -d
+make serve
 ```
 
 ## It didnt work
@@ -41,3 +41,19 @@ docker-compose up --build -d
 Make sure you deleted the docker volume of `bareksa_project_db` and `bareksa_project_cache` if you happen to change each of the service password after the first image creation
 
 But, im sure that is not the error: in that case go check `logs.txt` file in the root of the repository folder to find out more
+
+# How to test
+
+Same as build but with `make test`, example:
+```bash
+cat > .env <<EOF
+POSTGRES_PASSWORD=hello_there
+REDIS_PASSWORD=please_hire_me
+MIGRATION_PASSWORD=lol_wait_not_really
+BACKEND_PORT=1337
+DEBUG_MODE=true
+LOG_FILE=logs
+EOF
+
+make test
+```
