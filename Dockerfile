@@ -1,4 +1,4 @@
-FROM golang:1.17
+FROM golang:1.17 AS build
 
 WORKDIR /usr/src/app
 
@@ -8,4 +8,18 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-CMD exec go run .
+RUN go build -o /bareska-interview
+
+### Deploy built binary
+
+FROM gcr.io/distroless/base-debian10
+
+WORKDIR /
+
+COPY --from=build /bareska-interview /bareska-interview
+
+EXPOSE 8080
+
+USER nonroot:nonroot
+
+ENTRYPOINT ["/bareska-interview"]
