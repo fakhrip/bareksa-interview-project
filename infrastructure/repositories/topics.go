@@ -6,15 +6,17 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/go-redis/cache/v8"
 	"github.com/uptrace/bun"
 )
 
 type topicsRepository struct {
-	db *bun.DB
+	db    *bun.DB
+	cache *cache.Cache
 }
 
-func createTopicsRepository(db *bun.DB) repositories.ITopicsRepository {
-	return &topicsRepository{db: db}
+func createTopicsRepository(db *bun.DB, cache *cache.Cache) repositories.ITopicsRepository {
+	return &topicsRepository{db: db, cache: cache}
 }
 
 func (repository *topicsRepository) FindOneByColumn(ctx context.Context, col string, query interface{}) (*domain.Topics, error) {

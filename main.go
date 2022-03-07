@@ -60,5 +60,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	server.Start(isDebugMode, dbPass, migrationPass, &customLogger)
+	redisPass := os.Getenv("REDIS_PASSWORD")
+	if redisPass == "" {
+		fmt.Println("[!] REDIS_PASSWORD property in .env is not set correctly")
+		os.Exit(1)
+	}
+
+	server.Start(isDebugMode, dbPass, migrationPass, redisPass, &customLogger)
 }

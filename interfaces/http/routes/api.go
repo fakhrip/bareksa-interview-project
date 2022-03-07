@@ -13,10 +13,10 @@ import (
 	"github.com/uptrace/bunrouter"
 )
 
-func Initialize(dbPass string, migrationPass string) []request.Request {
+func Initialize(dbPass string, migrationPass string, redisPass string) []request.Request {
 	allRequests := make([]request.Request, 0, 20)
-	newsService := repositories.CreateNewsServiceResolve(dbPass)
-	topicsService := repositories.CreateTopicsServiceResolve(dbPass)
+	newsService := repositories.CreateNewsServiceResolve(dbPass, redisPass)
+	topicsService := repositories.CreateTopicsServiceResolve(dbPass, redisPass)
 
 	allRequests = append(allRequests,
 		request.AddRequest(request.GET, "/health_check", func(w http.ResponseWriter, req bunrouter.Request) error {
@@ -92,8 +92,8 @@ func Initialize(dbPass string, migrationPass string) []request.Request {
 	return allRequests
 }
 
-func ApiRoutes(dbPass string, migrationPass string) (func(g *bunrouter.Group), *[]request.Request) {
-	allRequests := Initialize(dbPass, migrationPass)
+func ApiRoutes(dbPass string, migrationPass string, redisPass string) (func(g *bunrouter.Group), *[]request.Request) {
+	allRequests := Initialize(dbPass, migrationPass, redisPass)
 
 	return func(group *bunrouter.Group) {
 		for index := range allRequests {

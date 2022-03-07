@@ -11,7 +11,7 @@ import (
 	"github.com/uptrace/bunrouter"
 )
 
-func Start(isDebugMode bool, dbPass string, migrationPass string, customLogger *log.CustomLogger) {
+func Start(isDebugMode bool, dbPass string, migrationPass string, redisPass string, customLogger *log.CustomLogger) {
 	router := bunrouter.New()
 
 	c := cors.New(cors.Options{
@@ -24,7 +24,7 @@ func Start(isDebugMode bool, dbPass string, migrationPass string, customLogger *
 
 	router.Use(middlewares.ErrorMiddleware(customLogger)).
 		WithGroup("", func(group *bunrouter.Group) {
-			apiGroups, apiSlice := routes.ApiRoutes(dbPass, migrationPass)
+			apiGroups, apiSlice := routes.ApiRoutes(dbPass, migrationPass, redisPass)
 			group.WithGroup("/api/v1", apiGroups)
 			group.WithGroup("/", routes.BaseRoutes(apiSlice))
 		})
