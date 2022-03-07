@@ -27,7 +27,7 @@ Okay, sure, we all are, so here you go (dont use this for production, in that ca
 cat > .env <<EOF
 POSTGRES_PASSWORD=hello_there
 REDIS_PASSWORD=please_hire_me
-MIGRATION_PASSWORD=lol_wait_not_really
+MIGRATION_PASSWORD=lol_wait_really
 BACKEND_PORT=1337
 DEBUG_MODE=true
 LOG_FILE=logs
@@ -49,7 +49,7 @@ Same as build but with `make test`, example:
 cat > .env <<EOF
 POSTGRES_PASSWORD=hello_there
 REDIS_PASSWORD=please_hire_me
-MIGRATION_PASSWORD=lol_wait_not_really
+MIGRATION_PASSWORD=lol_wait_really
 BACKEND_PORT=1337
 DEBUG_MODE=true
 LOG_FILE=logs
