@@ -4,7 +4,7 @@ News and Topic management using REST API with domain driven design architecture 
 - Caching mechanism using redis
 - Filter news by status
 - Filter news by topic
-- Unit tested API
+- Unit tested API (WIP)
 
 # List of endpoints (apis)
 
