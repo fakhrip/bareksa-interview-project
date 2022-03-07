@@ -37,3 +37,5 @@ docker-compose up --build -d
 ## It didnt work
 
 Make sure you deleted the docker volume of `bareksa_project_db` and `bareksa_project_cache` if you happen to change each of the service password after the first image creation
+
+But, im sure that is not the error: in that case go check `logs.txt` file in the root of the repository folder to find out more
