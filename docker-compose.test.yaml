@@ -1,0 +1,36 @@
+version: '3.6'
+services:
+
+  postgres:
+    image: postgres:14.2-alpine
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
+    ports:
+      - "5432"
+    restart: always
+
+  redis:
+    image: redis:6.2-alpine
+    command: redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASSWORD:?err}
+    ports:
+      - '6379'
+    restart: always
+
+  backend:
+    build:
+      context: ./
+    image: backend
+    depends_on:
+    - "postgres"
+    - "redis"
+
+# Command to run the unit_test
+# docker-compose -f docker-compose.test.yaml -p bareksa-inteview-project_test up --abort-on-container-exit --build unit_test
+
+  unit_test:
+    build:
+      context: ./
+      target: build
+    depends_on:
+    - "backend"
+    command: go test -v
