@@ -7,14 +7,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
     ports:
       - "5432"
-    restart: always
 
   redis:
     image: redis:6.2-alpine
     command: redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASSWORD:?err}
     ports:
       - '6379'
-    restart: always
 
   backend:
     build:
