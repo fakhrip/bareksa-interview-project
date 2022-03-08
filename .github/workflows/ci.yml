@@ -1,0 +1,33 @@
+name: CI Unit Test
+
+on:
+  push:
+    branches:
+    - main
+    - dependabot/**
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  docker:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Setup .env
+      run: |
+        cat > .env <<EOF
+        POSTGRES_PASSWORD=test
+        REDIS_PASSWORD=test
+        MIGRATION_PASSWORD=test
+        BACKEND_PORT=1337
+        DEBUG_MODE=true
+        LOG_FILE=logs
+        EOF
+
+    - name: Start containers and run test
+      run: make test && exit $(docker wait bareksa-inteview-project_test_unit_test_1)
