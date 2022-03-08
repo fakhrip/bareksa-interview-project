@@ -69,19 +69,21 @@ func (service *topicsService) GetAllTopics(ctx context.Context) ([]domain.Topics
 }
 
 func (service *topicsService) InsertTopics(ctx context.Context, newTopicsModel *domain.Topics) (*domain.Topics, error) {
-	if err := service.Repository.Insert(ctx, newTopicsModel); err != nil {
+	res, err := service.Repository.Insert(ctx, newTopicsModel)
+	if err != nil {
 		return nil, err
 	}
 
-	return newTopicsModel, nil
+	return res, nil
 }
 
 func (service *topicsService) UpdateTopics(ctx context.Context, newTopicsModel *domain.Topics, id int64) (*domain.Topics, error) {
-	if err := service.Repository.Update(ctx, newTopicsModel, id); err != nil {
+	res, err := service.Repository.Update(ctx, newTopicsModel, id)
+	if err != nil {
 		return nil, err
 	}
 
-	return newTopicsModel, nil
+	return res, nil
 }
 
 func (service *topicsService) DeleteTopics(ctx context.Context, id int64) (interface{}, error) {

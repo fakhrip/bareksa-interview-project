@@ -106,13 +106,25 @@ func (repository *newsRepository) GetAll(ctx context.Context) ([]domain.News, er
 	return allNews, nil
 }
 
-func (repository *newsRepository) Insert(ctx context.Context, news *domain.News) error {
+func (repository *newsRepository) Insert(ctx context.Context, news *domain.News) (*domain.News, error) {
 	allNews := make([]domain.News, 0)
+
+	res, err := repository.db.NewInsert().Model(news).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	news.ID = id
 
 	cacheKey := "news-all"
 	if repository.cache.Exists(ctx, cacheKey) {
 		if err := repository.cache.Get(ctx, cacheKey, &allNews); err != nil {
-			return err
+			return nil, err
 		}
 
 		allNews = append(allNews, *news)
@@ -121,19 +133,27 @@ func (repository *newsRepository) Insert(ctx context.Context, news *domain.News)
 			Key:   cacheKey,
 			Value: allNews,
 		}); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	_, err := repository.db.NewInsert().Model(news).Exec(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return news, nil
 }
 
-func (repository *newsRepository) Update(ctx context.Context, news *domain.News, id int64) error {
+func (repository *newsRepository) Update(ctx context.Context, news *domain.News, id int64) (*domain.News, error) {
+	res, err := repository.db.NewUpdate().Model(news).
+		Where("? = ?", bun.Ident("id"), strconv.Itoa(int(id))).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	id, err = res.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	news.ID = id
+
 	cacheKey := fmt.Sprintf("news-id-%v", id)
 	if repository.cache.Exists(ctx, cacheKey) {
 		if err := repository.cache.Set(&cache.Item{
@@ -141,17 +161,11 @@ func (repository *newsRepository) Update(ctx context.Context, news *domain.News,
 			Key:   cacheKey,
 			Value: news,
 		}); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	_, err := repository.db.NewUpdate().Model(news).
-		Where("? = ?", bun.Ident("id"), strconv.Itoa(int(id))).Exec(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return news, nil
 }
 
 func (repository *newsRepository) Delete(ctx context.Context, id int64) error {

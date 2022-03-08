@@ -70,11 +70,12 @@ func (service *newsService) InsertNews(ctx context.Context, newNewsModel *domain
 		return nil, errors.New("Status should be either 'draft', 'deleted', or 'publish'")
 	}
 
-	if err := service.Repository.Insert(ctx, newNewsModel); err != nil {
+	res, err := service.Repository.Insert(ctx, newNewsModel)
+	if err != nil {
 		return nil, err
 	}
 
-	return newNewsModel, nil
+	return res, nil
 }
 
 func (service *newsService) UpdateNews(ctx context.Context, newNewsModel *domain.News, id int64) (*domain.News, error) {
@@ -82,11 +83,12 @@ func (service *newsService) UpdateNews(ctx context.Context, newNewsModel *domain
 		return nil, errors.New("Status should be either 'draft', 'deleted', or 'publish'")
 	}
 
-	if err := service.Repository.Update(ctx, newNewsModel, id); err != nil {
+	res, err := service.Repository.Update(ctx, newNewsModel, id)
+	if err != nil {
 		return nil, err
 	}
 
-	return newNewsModel, nil
+	return res, nil
 }
 
 func (service *newsService) DeleteNews(ctx context.Context, id int64) (interface{}, error) {
