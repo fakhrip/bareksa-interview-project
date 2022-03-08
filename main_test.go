@@ -157,7 +157,7 @@ func TestHealthCheck(t *testing.T) {
 	w := CreateAndSendRequest(http.MethodGet, "/api/v1/health_check", nil, t)
 	AssertResponseCodeEqual(w.Code, http.StatusOK, t)
 
-	expected := []byte(`{"message":"🤖: Ayy sir, service is currently healthy, you may want to continue enjoy your life now"}`)
+	expected := []byte(`{"message": "🤖: Ayy sir, service is currently healthy, you may want to continue enjoy your life now"}`)
 	result := w.Body.Bytes()
 	AssertBodyEqual(expected, result, t)
 }
@@ -171,6 +171,19 @@ func TestRefreshMigrationWrongSecret(t *testing.T) {
 	AssertResponseCodeEqual(w.Code, http.StatusInternalServerError, t)
 
 	expected := []byte(`The secret is wrong, dont try any harder if you are not the admin`)
+	result := w.Body.Bytes()
+	AssertBodyEqual(expected, result, t)
+}
+
+func TestRefreshMigrationCorrectSecret(t *testing.T) {
+	migrationPass := os.Getenv("MIGRATION_PASSWORD")
+	jsonStr := fmt.Sprintf(`{"secret":"%s"}`, migrationPass)
+	jsonBytes := []byte(jsonStr)
+
+	w := CreateAndSendRequest(http.MethodPost, "/api/v1/refresh_migration", bytes.NewBuffer(jsonBytes), t)
+	AssertResponseCodeEqual(w.Code, http.StatusOK, t)
+
+	expected := []byte(`{"message": "🤖: Ayy sir, database migration has been refreshed successfully"}`)
 	result := w.Body.Bytes()
 	AssertBodyEqual(expected, result, t)
 }
