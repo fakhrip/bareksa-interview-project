@@ -1,4 +1,5 @@
 serve:
+	docker volume ls | grep -q bareksa-interview-project_bareksa_project_log && docker volume rm bareksa-interview-project_bareksa_project_log
 	docker-compose up --build --remove-orphans -d
 
 test:
