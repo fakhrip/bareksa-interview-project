@@ -6,7 +6,6 @@ WORKDIR /usr/src/app
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
-COPY .env /.env
 COPY . .
 
 RUN go build -o /bareksa-interview
@@ -15,11 +14,9 @@ RUN go build -o /bareksa-interview
 
 FROM gcr.io/distroless/base-debian10
 
-ARG LOG_FILE
-
 WORKDIR /usr/src/app
 
-COPY --from=build /.env ./.env
+COPY --from=build /usr/src/app/.env ./.env
 COPY --from=build /bareksa-interview ./bareksa-interview
 
 # USER nonroot:nonroot

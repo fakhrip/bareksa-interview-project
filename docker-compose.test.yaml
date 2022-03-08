@@ -21,4 +21,7 @@ services:
     build:
       context: ./
       target: build
+    depends_on:
+      - "postgres"
+      - "redis"
     command: go test -v

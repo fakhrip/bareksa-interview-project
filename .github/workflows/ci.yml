@@ -30,4 +30,4 @@ jobs:
         EOF
 
     - name: Start containers and run test
-      run: make test && exit $(docker wait bareksa-inteview-project_test_unit_test_1)
+      run: make test
