@@ -28,7 +28,7 @@ func Initialize(dbPass string, migrationPass string, redisPass string) []request
 		request.AddRequest(request.POST, "/refresh_migration", func(w http.ResponseWriter, req bunrouter.Request) error {
 			var (
 				secretStruct struct {
-					secret string
+					Secret string `json:"secret"`
 				}
 				err error
 			)
@@ -38,7 +38,7 @@ func Initialize(dbPass string, migrationPass string, redisPass string) []request
 				return err
 			}
 
-			if secretStruct.secret != migrationPass {
+			if secretStruct.Secret != migrationPass {
 				return errors.New("The secret is wrong, dont try any harder if you are not the admin")
 			}
 
